@@ -1,17 +1,32 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  Container,
+  Header,
+  Photo,
+  User,
+  UserGreeting,
+  UserInfo,
+  UserName,
+  UserWrapper,
+} from "./styles";
 
 export function Dashboard() {
   return (
-    <View style={styles.container}>
-      <Text>Dashboard</Text>
-    </View>
+    <Container>
+      <Header>
+        <UserWrapper>
+          <UserInfo>
+            <Photo
+              source={{
+                uri: "https://avatars.githubusercontent.com/u/65031832?v=4",
+              }}
+            />
+            <User>
+              <UserGreeting>Olá, </UserGreeting>
+              <UserName>Diogo</UserName>
+            </User>
+          </UserInfo>
+        </UserWrapper>
+      </Header>
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
