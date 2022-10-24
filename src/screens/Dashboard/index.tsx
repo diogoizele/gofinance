@@ -1,6 +1,9 @@
+import { HightLightCard } from "../../components/HightLightCard";
 import {
   Container,
   Header,
+  HightLightCards,
+  Icon,
   Photo,
   User,
   UserGreeting,
@@ -25,8 +28,29 @@ export function Dashboard() {
               <UserName>Diogo</UserName>
             </User>
           </UserInfo>
+          <Icon name="power" />
         </UserWrapper>
       </Header>
+      <HightLightCards>
+        <HightLightCard
+          title="Entradas"
+          amount="R$ 17.400,00"
+          lastTransaction="Última entrada dia 13 de abril"
+          type="up"
+        />
+        <HightLightCard
+          title="Saídas"
+          amount="R$ 17.400,00"
+          lastTransaction="Última entrada dia 13 de abril"
+          type="down"
+        />
+        <HightLightCard
+          title="Total"
+          amount="R$ 17.400,00"
+          lastTransaction="Última entrada dia 13 de abril"
+          type="total"
+        />
+      </HightLightCards>
     </Container>
   );
 }
