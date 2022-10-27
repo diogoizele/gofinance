@@ -6,7 +6,7 @@ import {
   getBottomSpace,
 } from "react-native-iphone-x-helper";
 import { DataListProps } from ".";
-import { FlatList } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
 
 export const Container = styled.View`
   flex: 1;
@@ -61,6 +61,16 @@ export const UserName = styled.Text`
 
   font-size: ${RFValue(18)}px;
   font-family: ${({ theme }) => theme.fonts.bold};
+`;
+
+export const LogoutButton = styled(TouchableOpacity)`
+  width: ${RFValue(32)}px;
+  height: ${RFValue(32)}px;
+
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 5px;
 `;
 
 export const Icon = styled(Feather)`
