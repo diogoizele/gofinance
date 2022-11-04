@@ -3,6 +3,8 @@ import { Keyboard, Modal, TouchableWithoutFeedback, Alert } from "react-native";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import uuid from "react-native-uuid";
+import { useNavigation } from "@react-navigation/native";
 
 import { Button } from "../../components/Forms/Button";
 import { CategorySelectButton } from "../../components/Forms/CategorySelectButton";
@@ -17,6 +19,9 @@ import {
   Title,
   TransactionsButtonContainer,
 } from "./styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { KEYS } from "../../global/constants/asyncStorageKeys";
+import { ScreenNavigationProps } from "../../routes/app.routes";
 
 const DEFAULT_CATEGORY = {
   key: "category",
@@ -46,10 +51,13 @@ export function Register() {
   const {
     control,
     formState: { errors },
+    reset,
     handleSubmit,
   } = useForm<FormData>({
     resolver: yupResolver(SCHEMA_VALIDATOR),
   });
+
+  const { navigate } = useNavigation<ScreenNavigationProps>();
 
   function handleTransactionTypeSelect(type: "up" | "down") {
     setTransactionType(type);
@@ -63,7 +71,13 @@ export function Register() {
     setCategoryModalOpen(false);
   }
 
-  function handleRegister(form: FormData) {
+  function clearFields() {
+    reset();
+    setTransactionType("");
+    setCategory(DEFAULT_CATEGORY);
+  }
+
+  async function handleRegister(form: FormData) {
     if (!transactionType)
       return Alert.alert(
         "Não foi possível cadastrar",
@@ -74,14 +88,35 @@ export function Register() {
       return Alert.alert("Não foi possível cadastrar", "Selecione a categoria");
 
     const data = {
+      id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
-      transactionType,
+      type: transactionType,
       category: category.key,
+      date: new Date(),
     };
 
-    console.log(data);
+    try {
+      const currentData = await AsyncStorage.getItem(KEYS.TRANSACTIONS);
+
+      const currentDataFormatted = currentData ? JSON.parse(currentData) : [];
+
+      const dataFormatted = [...currentDataFormatted, data];
+
+      await AsyncStorage.setItem(
+        KEYS.TRANSACTIONS,
+        JSON.stringify(dataFormatted)
+      );
+
+      clearFields();
+      navigate("Listagem");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Não foi possível salvar");
+    }
   }
+
+  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
