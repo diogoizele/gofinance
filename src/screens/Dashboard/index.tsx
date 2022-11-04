@@ -1,9 +1,11 @@
-import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { HightLightCard } from "../../components/HightLightCard";
 import {
   TransactionCard,
   TransactionCardProps,
 } from "../../components/TransactionCard";
+import { KEYS } from "../../global/constants/asyncStorageKeys";
 import {
   Container,
   Header,
@@ -21,39 +23,50 @@ import {
   UserWrapper,
 } from "./styles";
 
-const data: DataListProps = {
-  id: 1,
-  title: "Desenvolvimento de site",
-  amount: "R$ 12.000,00",
-  category: {
-    name: "Vendas",
-    icon: "dollar-sign",
-  },
-  date: "13/04/2021",
-  type: "positive",
-};
-
-const data2: DataListProps = {
-  id: 2,
-  title: "Potatoes",
-  amount: "R$ 39,00",
-  category: {
-    name: "Alimentção",
-    icon: "coffee",
-  },
-  date: "13/04/2021",
-  type: "negative",
-};
-
 export interface DataListProps extends TransactionCardProps {
   id: number;
 }
 
 export function Dashboard() {
-  const [transactions, setTransactions] = useState<DataListProps[]>([
-    data,
-    data2,
-  ]);
+  const [transactions, setTransactions] = useState<DataListProps[]>([]);
+
+  async function getAsyncStorageTransactions() {
+    const asyncStorageTransactions = await AsyncStorage.getItem(
+      KEYS.TRANSACTIONS
+    );
+
+    const transactions = asyncStorageTransactions
+      ? JSON.parse(asyncStorageTransactions)
+      : [];
+
+    const formattedTransactions: DataListProps[] = transactions.map(
+      (item: DataListProps) => {
+        const amount = Number(item.amount).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+
+        const date = Intl.DateTimeFormat("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+        }).format(new Date(item.date));
+
+        return {
+          ...item,
+          amount,
+          date,
+          type: item.type,
+        };
+      }
+    );
+
+    setTransactions(formattedTransactions);
+  }
+
+  useEffect(() => {
+    getAsyncStorageTransactions();
+  }, []);
 
   return (
     <Container>
@@ -100,8 +113,10 @@ export function Dashboard() {
         <Title>Listagem</Title>
         <TransactionList
           data={transactions}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <TransactionCard data={item} />}
+          keyExtractor={(item: DataListProps) => item.id}
+          renderItem={({ item }: { item: DataListProps }) => (
+            <TransactionCard data={item} />
+          )}
         />
       </Transactions>
     </Container>

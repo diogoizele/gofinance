@@ -105,9 +105,7 @@ export const Title = styled.Text`
   color: ${({ theme }) => theme.colors.title};
 `;
 
-export const TransactionList = styled(
-  FlatList as new () => FlatList<DataListProps>
-).attrs({
+export const TransactionList = styled.FlatList.attrs({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
     paddingBottom: getBottomSpace(),
