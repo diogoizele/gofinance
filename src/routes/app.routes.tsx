@@ -1,12 +1,21 @@
 import { Platform } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 
 import { Dashboard } from "../screens/Dashboard";
 import { Register } from "../screens/Register";
 import { useTheme } from "styled-components";
+import {
+  rootBottomTabNavigator,
+  RootBottomTabNavigatorProps,
+} from "./bottomTabNavigatorProps";
 
-const { Navigator, Screen } = createBottomTabNavigator();
+const { Navigator, Screen } = rootBottomTabNavigator;
+
+export type ScreenNavigationProps = BottomTabNavigationProp<
+  RootBottomTabNavigatorProps,
+  "Listagem"
+>;
 
 export function AppRoutes() {
   const { colors } = useTheme();
