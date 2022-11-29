@@ -1,5 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { ActivityIndicator } from "react-native";
+
 import { HightLightCard } from "../../components/HightLightCard";
 import {
   TransactionCard,
@@ -8,9 +11,12 @@ import {
 import { KEYS } from "../../global/constants/asyncStorageKeys";
 import {
   Container,
+  EmptyStateContainer,
+  EmptyStateText,
   Header,
   HightLightCards,
   Icon,
+  LoadContainer,
   LogoutButton,
   Photo,
   Title,
@@ -22,35 +28,99 @@ import {
   UserName,
   UserWrapper,
 } from "./styles";
+import theme from "../../global/styles/theme";
+import { currency } from "../../utils/currencyFormat";
+import { date as formatDate } from "../../utils/dateFormat";
 
 export interface DataListProps extends TransactionCardProps {
   id: number;
 }
 
+interface HightlightData {
+  amount: string;
+  lastTransaction: string;
+}
+
+interface HightlightProps {
+  entries: HightlightData;
+  expensive: HightlightData;
+  total: HightlightData;
+}
+
+const transactionsText = {
+  positive: "entrada",
+  negative: "saída",
+  total: "total",
+};
+
 export function Dashboard() {
   const [transactions, setTransactions] = useState<DataListProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [highlightData, setHighlightData] = useState<HightlightProps>(
+    {} as HightlightProps
+  );
+
+  function getLastTransactionDate(
+    collection: DataListProps[],
+    type: "positive" | "negative" | "total"
+  ) {
+    if (type === "total") {
+      if (collection.length === 0) {
+        return "Nenhuma transação";
+      }
+
+      const lastTransaction = new Date(
+        Math.max.apply(
+          Math,
+          collection.map((transaction) => new Date(transaction.date).getTime())
+        )
+      );
+
+      return `Total em ${lastTransaction.getDate()} de ${lastTransaction.toLocaleString(
+        "pt-BR",
+        { month: "long" }
+      )}`;
+    }
+
+    const lastTransactionTypeText = transactionsText[type];
+    const collectionFilteredByType = collection
+      .filter((transaction) => transaction.type === type)
+      .map(({ date }) => new Date(date)?.getTime());
+
+    if (collectionFilteredByType.length === 0) {
+      return `Nenhuma ${lastTransactionTypeText} encontrada`;
+    }
+
+    const lastDate = new Date(Math.max.apply(Math, collectionFilteredByType));
+
+    const formattedLastDate = formatDate(lastDate);
+
+    return `Ultima ${lastTransactionTypeText} dia ${formattedLastDate}`;
+  }
 
   async function getAsyncStorageTransactions() {
     const asyncStorageTransactions = await AsyncStorage.getItem(
       KEYS.TRANSACTIONS
     );
 
-    const transactions = asyncStorageTransactions
+    let entriesTotal = 0;
+    let expensiveTotal = 0;
+
+    const transactions: DataListProps[] = asyncStorageTransactions
       ? JSON.parse(asyncStorageTransactions)
       : [];
 
     const formattedTransactions: DataListProps[] = transactions.map(
       (item: DataListProps) => {
-        const amount = Number(item.amount).toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        });
+        if (item.type === "positive") {
+          entriesTotal += Number(item.amount);
+        } else {
+          expensiveTotal += Number(item.amount);
+        }
 
-        const date = Intl.DateTimeFormat("pt-BR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-        }).format(new Date(item.date));
+        const amount = currency(Number(item.amount));
+
+        const date = formatDate(item.date);
 
         return {
           ...item,
@@ -62,63 +132,101 @@ export function Dashboard() {
     );
 
     setTransactions(formattedTransactions);
+    setHighlightData({
+      entries: {
+        amount: currency(entriesTotal),
+        lastTransaction: getLastTransactionDate(transactions, "positive"),
+      },
+      expensive: {
+        amount: currency(expensiveTotal),
+        lastTransaction: getLastTransactionDate(transactions, "negative"),
+      },
+      total: {
+        amount: currency(entriesTotal - expensiveTotal),
+        lastTransaction: getLastTransactionDate(transactions, "total"),
+      },
+    });
+    setIsLoading(false);
   }
 
   useEffect(() => {
     getAsyncStorageTransactions();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      getAsyncStorageTransactions();
+    }, [])
+  );
+
   return (
     <Container>
-      <Header>
-        <UserWrapper>
-          <UserInfo>
-            <Photo
-              source={{
-                uri: "https://avatars.githubusercontent.com/u/65031832?v=4",
-              }}
+      {isLoading ? (
+        <LoadContainer>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </LoadContainer>
+      ) : (
+        <>
+          <Header>
+            <UserWrapper>
+              <UserInfo>
+                <Photo
+                  source={{
+                    uri: "https://avatars.githubusercontent.com/u/65031832?v=4",
+                  }}
+                />
+                <User>
+                  <UserGreeting>Olá, </UserGreeting>
+                  <UserName>Diogo</UserName>
+                </User>
+              </UserInfo>
+              <LogoutButton onPress={() => {}}>
+                <Icon name="power" />
+              </LogoutButton>
+            </UserWrapper>
+          </Header>
+          <HightLightCards>
+            <HightLightCard
+              title="Entradas"
+              amount={highlightData?.entries?.amount}
+              lastTransaction={highlightData?.entries?.lastTransaction}
+              type="positive"
             />
-            <User>
-              <UserGreeting>Olá, </UserGreeting>
-              <UserName>Diogo</UserName>
-            </User>
-          </UserInfo>
-          <LogoutButton onPress={() => {}}>
-            <Icon name="power" />
-          </LogoutButton>
-        </UserWrapper>
-      </Header>
-      <HightLightCards>
-        <HightLightCard
-          title="Entradas"
-          amount="R$ 17.400,00"
-          lastTransaction="Última entrada dia 13 de abril"
-          type="up"
-        />
-        <HightLightCard
-          title="Saídas"
-          amount="R$ 17.400,00"
-          lastTransaction="Última entrada dia 13 de abril"
-          type="down"
-        />
-        <HightLightCard
-          title="Total"
-          amount="R$ 17.400,00"
-          lastTransaction="Última entrada dia 13 de abril"
-          type="total"
-        />
-      </HightLightCards>
+            <HightLightCard
+              title="Saídas"
+              amount={highlightData?.expensive?.amount}
+              lastTransaction={highlightData?.expensive?.lastTransaction}
+              type="negative"
+            />
+            <HightLightCard
+              title="Total"
+              amount={highlightData?.total?.amount}
+              lastTransaction={highlightData?.total?.lastTransaction}
+              type="total"
+            />
+          </HightLightCards>
 
-      <Transactions>
-        <Title>Listagem</Title>
-        <TransactionList
-          data={transactions}
-          keyExtractor={(item: DataListProps) => item.id}
-          renderItem={({ item }: { item: DataListProps }) => (
-            <TransactionCard data={item} />
-          )}
-        />
-      </Transactions>
+          <Transactions>
+            <Title>Listagem</Title>
+            <TransactionList
+              data={transactions}
+              keyExtractor={(item: DataListProps) => item.id}
+              renderItem={({ item }: { item: DataListProps }) => (
+                <TransactionCard data={item} />
+              )}
+              ListEmptyComponent={ListEmptyComponent}
+            />
+          </Transactions>
+        </>
+      )}
     </Container>
   );
 }
+
+const ListEmptyComponent = () => {
+  return (
+    <EmptyStateContainer>
+      <EmptyStateText>Nenhuma transação encontrada</EmptyStateText>
+    </EmptyStateContainer>
+  );
+};

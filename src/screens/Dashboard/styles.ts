@@ -113,3 +113,24 @@ export const TransactionList = styled.FlatList.attrs({
 })`
   flex: 1%;
 `;
+
+export const LoadContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const EmptyStateContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const EmptyStateText = styled.Text`
+  font-size: ${RFValue(14)}px;
+  font-family: ${({ theme }) => theme.fonts.regular};
+
+  margin-bottom: 16px;
+
+  color: ${({ theme }) => theme.colors.text};
+`;

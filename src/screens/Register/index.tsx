@@ -59,7 +59,7 @@ export function Register() {
 
   const { navigate } = useNavigation<ScreenNavigationProps>();
 
-  function handleTransactionTypeSelect(type: "up" | "down") {
+  function handleTransactionTypeSelect(type: "positive" | "negative") {
     setTransactionType(type);
   }
 
@@ -116,8 +116,6 @@ export function Register() {
     }
   }
 
-  
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>
@@ -145,16 +143,16 @@ export function Register() {
 
             <TransactionsButtonContainer>
               <TransactionTypeButton
-                isActive={transactionType === "up"}
-                type="up"
+                isActive={transactionType === "positive"}
+                type="positive"
                 title="Entrada"
-                onPress={() => handleTransactionTypeSelect("up")}
+                onPress={() => handleTransactionTypeSelect("positive")}
               />
               <TransactionTypeButton
-                isActive={transactionType === "down"}
-                type="down"
+                isActive={transactionType === "negative"}
+                type="negative"
                 title="Saída"
-                onPress={() => handleTransactionTypeSelect("down")}
+                onPress={() => handleTransactionTypeSelect("negative")}
               />
             </TransactionsButtonContainer>
             <CategorySelectButton
