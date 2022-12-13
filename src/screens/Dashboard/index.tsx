@@ -60,6 +60,10 @@ export function Dashboard() {
     {} as HightlightProps
   );
 
+  async function __unstableClearData() {
+    await AsyncStorage.removeItem(KEYS.TRANSACTIONS);
+  }
+
   function getLastTransactionDate(
     collection: DataListProps[],
     type: "positive" | "negative" | "total"
@@ -180,7 +184,7 @@ export function Dashboard() {
                   <UserName>Diogo</UserName>
                 </User>
               </UserInfo>
-              <LogoutButton onPress={() => {}}>
+              <LogoutButton onPress={__unstableClearData}>
                 <Icon name="power" />
               </LogoutButton>
             </UserWrapper>
