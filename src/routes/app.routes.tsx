@@ -1,10 +1,11 @@
 import { Platform } from "react-native";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
+import { useTheme } from "styled-components";
 
 import { Dashboard } from "../screens/Dashboard";
 import { Register } from "../screens/Register";
-import { useTheme } from "styled-components";
+import { Resume } from "../screens/Resume";
 import {
   rootBottomTabNavigator,
   RootBottomTabNavigatorProps,
@@ -53,7 +54,7 @@ export function AppRoutes() {
       />
       <Screen
         name="Resumo"
-        component={Register}
+        component={Resume}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon color={color} name="pie-chart" size={size} />
