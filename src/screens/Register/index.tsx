@@ -22,6 +22,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { KEYS } from "../../global/constants/asyncStorageKeys";
 import { ScreenNavigationProps } from "../../routes/app.routes";
+import theme from "../../global/styles/theme";
 
 const DEFAULT_CATEGORY = {
   key: "category",
@@ -129,6 +130,7 @@ export function Register() {
               name="name"
               control={control}
               placeholder="Nome"
+              placeholderTextColor={theme.colors.text}
               autoCapitalize="sentences"
               autoCorrect={false}
               error={errors.name && errors.name.message}
@@ -137,6 +139,7 @@ export function Register() {
               name="amount"
               control={control}
               placeholder="Preço"
+              placeholderTextColor={theme.colors.text}
               keyboardType="numeric"
               error={errors.amount && errors.amount.message}
             />
@@ -163,7 +166,10 @@ export function Register() {
           <Button onPress={handleSubmit(handleRegister)}>Enviar</Button>
         </Form>
 
-        <Modal visible={categoryModalOpen}>
+        <Modal
+          visible={categoryModalOpen}
+          onRequestClose={handleCloseSelectCategoryModal}
+        >
           <CategorySelect
             category={category}
             setCategory={setCategory}
