@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import styled from "styled-components/native";
 
 export const Container = styled(TouchableOpacity)`
@@ -18,6 +18,6 @@ export const Container = styled(TouchableOpacity)`
 export const Title = styled.Text`
   font-family: ${({ theme }) => theme.fonts.medium};
   font-size: 15px;
-  
+
   color: ${({ theme }) => theme.colors.shape};
 `;
