@@ -1,6 +1,10 @@
 import { FlatList } from "react-native";
-import { RFValue } from "react-native-responsive-fontsize";
+import { BorderlessButton } from "react-native-gesture-handler";
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
+import { Feather } from "@expo/vector-icons";
+import { Dimensions } from "react-native";
+
 import { FormattedExpensiveProps } from ".";
 
 export const Container = styled.View`
@@ -28,15 +32,53 @@ export const Title = styled.Text`
 
 export const HistoryList = styled(FlatList<FormattedExpensiveProps>)`
   flex: 1;
+`;
+
+export const ChartContainer = styled.View`
+  width: 100%;
+  align-items: center;
+
+  padding-top: ${RFValue(28)}px;
+`;
+
+export const Content = styled.ScrollView`
   width: 100%;
 
   padding: 0 24px;
 `;
 
-export const ChartContainer = styled.View`
-  /* width: 100%; */
-  /* align-items: center; */
+export const MonthSelect = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 
-  padding-top: ${RFValue(28)}px;
-  /* margin: 0 24px; */
+  margin-top: 24;
+`;
+export const MonthSelectButton = styled(BorderlessButton)``;
+
+export const MonthSelectIcon = styled(Feather)`
+  font-size: ${RFValue(24)}px;
+`;
+export const Month = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: ${RFValue(20)}px;
+`;
+
+export const EmptyListContainer = styled.View`
+  flex: 1;
+
+  align-items: center;
+  justify-content: center;
+
+  height: ${Dimensions.get("window").height - RFPercentage(50)}px;
+`;
+
+export const EmptyListText = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: ${RFValue(14)}px;
+
+  color: ${({ theme }) => theme.colors.text};
+  text-align: center;
+
+  margin-top: ${RFValue(24)}px;
 `;
