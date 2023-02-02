@@ -3027,6 +3027,11 @@ dag-map@~1.0.0:
   resolved "https://registry.npmjs.org/dag-map/-/dag-map-1.0.2.tgz"
   integrity sha512-+LSAiGFwQ9dRnRdOeaj7g47ZFJcOUPukAP8J3A3fuZ1g9Y44BG+P1sgApjLXTQPOzC4+7S9Wr8kXsfpINM4jpw==
 
+date-fns@^2.29.3:
+  version "2.29.3"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.3.tgz#27402d2fc67eb442b511b70bbdf98e6411cd68a8"
+  integrity sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==
+
 dayjs@^1.8.15:
   version "1.11.5"
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.5.tgz"
@@ -5827,6 +5832,11 @@ react-native-codegen@^0.69.2:
     flow-parser "^0.121.0"
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
+
+react-native-flipper@0.175.0:
+  version "0.175.0"
+  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.175.0.tgz#dbb78ec8c83c0abf6793b9f7fa0ad7da138ac0d7"
+  integrity sha512-xHTjjvfrFyo7JEIXHBZEjjQ6mU+x9UJuqY99pVJJu70KsERp4GrdAUmHR/IZrp8AtJcLEpL56YIbzkquPjNkgw==
 
 react-native-gesture-handler@~2.5.0:
   version "2.5.0"
