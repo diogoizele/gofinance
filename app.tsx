@@ -3,8 +3,8 @@ import "intl";
 import "intl/locale-data/jsonp/pt-BR";
 
 import React from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ThemeProvider } from "styled-components";
-import { NavigationContainer } from "@react-navigation/native";
 
 import {
   useFonts,
@@ -14,10 +14,9 @@ import {
 } from "@expo-google-fonts/poppins";
 
 import theme from "./src/global/styles/theme";
-import { AppRoutes } from "./src/routes/app.routes";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SignIn } from "./src/screens/SignIn";
 import { AuthProvider } from "./src/context/AuthProvider/AuthProvider";
+import { Routes } from "./src/routes";
+import { useAuth } from "./src/hooks/auth/useAuth";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -26,7 +25,9 @@ export default function App() {
     Poppins_700Bold,
   });
 
-  if (!fontsLoaded) {
+  const { isUserStorageLoading } = useAuth();
+
+  if (!fontsLoaded || isUserStorageLoading) {
     return null;
   }
 
@@ -34,10 +35,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider theme={theme}>
         <AuthProvider>
-          <NavigationContainer>
-            {/* <AppRoutes /> */}
-            <SignIn />
-          </NavigationContainer>
+          <Routes />
         </AuthProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
