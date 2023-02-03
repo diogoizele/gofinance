@@ -31,6 +31,7 @@ import {
 import theme from "../../global/styles/theme";
 import { currency } from "../../utils/currencyFormat";
 import { date as formatDate } from "../../utils/dateFormat";
+import { useAuth } from "../../hooks/auth/useAuth";
 
 export interface DataListProps extends TransactionCardProps {
   id: number;
@@ -59,10 +60,7 @@ export function Dashboard() {
   const [highlightData, setHighlightData] = useState<HightlightProps>(
     {} as HightlightProps
   );
-
-  async function __unstableClearData() {
-    await AsyncStorage.removeItem(KEYS.TRANSACTIONS);
-  }
+  const { user, signOut } = useAuth();
 
   function getLastTransactionDate(
     collection: DataListProps[],
@@ -176,15 +174,15 @@ export function Dashboard() {
               <UserInfo>
                 <Photo
                   source={{
-                    uri: "https://avatars.githubusercontent.com/u/65031832?v=4",
+                    uri: user?.picture,
                   }}
                 />
                 <User>
                   <UserGreeting>Olá, </UserGreeting>
-                  <UserName>Diogo</UserName>
+                  <UserName>{user?.name}</UserName>
                 </User>
               </UserInfo>
-              <LogoutButton onPress={__unstableClearData}>
+              <LogoutButton onPress={signOut}>
                 <Icon name="power" />
               </LogoutButton>
             </UserWrapper>
