@@ -1,3 +1,4 @@
 export const KEYS = {
-    TRANSACTIONS: '@gofinance:transactions',
-}
+  TRANSACTIONS: "@gofinance:transactions",
+  USER: "@gofinance:user",
+};
