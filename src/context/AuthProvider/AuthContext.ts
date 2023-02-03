@@ -8,7 +8,11 @@ export interface User {
 }
 
 export interface AuthContextData {
-  user: User;
+  user: User | null;
+  isUserStorageLoading: boolean;
+  signInWithGoogle(): Promise<void>;
+  signInWithApple(): Promise<void>;
+  signOut(): Promise<void>;
 }
 
 export const AuthContext = createContext({} as AuthContextData);
